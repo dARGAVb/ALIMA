@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>ALIMA</title>
+    <link rel="icon" href="w">
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #1a0823;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="tunnelCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('tunnelCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let angle = 0;
+        let particles = [];
+
+        function createParticles() {
+            for (let i = 0; i < 100; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 3 + 1,
+                    speedY: Math.random() * 1 + 0.5,
+                    color: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.8)`
+                });
+            }
+        }
+
+        function drawParticles() {
+            particles.forEach(p => {
+                p.y += p.speedY;
+                if (p.y > canvas.height) p.y = 0;
+
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+    
+        function drawTunnel() {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            for (let i = 0; i < 20; i++) {
+                const size = (i + 1) * 60;
+                const opacity = 1 - i * 0.05;
+
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate((angle + i * 15) * (Math.PI / 180));
+                
+                const gradient = ctx.createLinearGradient(-size / 2, -size / 2, size / 2, size / 2);
+                gradient.addColorStop(0, `rgba(255, 100, 150, ${opacity})`);
+                gradient.addColorStop(1, `rgba(100, 100, 255, ${opacity})`);
+
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.moveTo(-size / 2, -size / 2);
+                ctx.lineTo(size / 2, -size / 2);
+                ctx.lineTo(size / 2, size / 2);
+                ctx.lineTo(-size / 2, size / 2);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.restore();
+            }
+
+            angle += 0.2; 
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            drawTunnel();
+            drawParticles();
+
+            requestAnimationFrame(animate);
+        }
+
+        createParticles();
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+
+
+
+<div data-barba="wrapper">
+    <div data-barba="container">
+
+        <div class="wrapper">
+            <div class="cat">
+                <div class="ear ear--left"></div>
+                <div class="ear ear--right"></div>
+                <div class="face">
+                    <div class="eye eye--left">
+                        <div class="eye-pupil"></div>
+                    </div>
+                    <div class="eye eye--right">
+                        <div class="eye-pupil"></div>
+                    </div>
+                    <div class="muzzle"></div>
+                </div>
+            </div>
